@@ -54,7 +54,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
         return true;
     }
 
-    //0 -> Iguales. <0 -> 1º mas grande. >0 2º mas grande.
+    //0 -> Iguales. <0 -> 1ยบ mas grande. >0 2ยบ mas grande.
     if(!arbol->comparador(arbol->clave, clave)){
         arbol->destructor(arbol->dato);
         arbol->dato = dato;
@@ -80,13 +80,75 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
 
 }
 
-void *abb_borrar(abb_t *arbol, const char *clave);
+//TODO: Se repite código en las siguientes tres funciones. Me duele pero es comportamiento binario, so...? What do?
+void *abb_borrar(abb_t *arbol, const char *clave) {
+	if(!arbol)
+        return NULL;
+	
+	if(!arbol->comparador(arbol->clave, clave)){
+		void *buffer = arbol->dato;
+		free((void *) arbol->clave);
+		arbol->destructor(arbol->dato);
+		free(arbol);
+        return buffer;
+    }
+	else if(arbol->comparador(arbol->clave, clave) < 0) {
+		return (abb_borrar(arbol->izq, clave));
+	}
+	else {
+		return (abb_borrar(arbol->der, clave));
+	}
+	
+	return NULL;
+}
 
-void *abb_obtener(const abb_t *arbol, const char *clave);
+void *abb_obtener(const abb_t *arbol, const char *clave) {
+	if(!arbol)
+        return NULL;
+	
+	if(!arbol->comparador(arbol->clave, clave)){
+        return arbol->dato;
+    }
+	else if(arbol->comparador(arbol->clave, clave) < 0) {
+		return (abb_obtener(arbol->izq, clave));
+	}
+	else {
+		return (abb_obtener(arbol->der, clave));
+	}
+	
+	return NULL;
+}
 
-bool abb_pertenece(const abb_t *arbol, const char *clave);
+bool abb_pertenece(const abb_t *arbol, const char *clave) {
+	if(!arbol)
+        return false;
+	
+	if(!arbol->comparador(arbol->clave, clave)){
+        return true;
+    }
+	else if(arbol->comparador(arbol->clave, clave) < 0) {
+		return (abb_pertenece(arbol->izq, clave));
+	}
+	else {
+		return (abb_pertenece(arbol->der, clave));
+	}
+	
+	return false;
+}
 
-size_t abb_cantidad(abb_t *arbol);
+size_t abb_cantidad(abb_t *arbol) {
+	if(!arbol)
+        return 0;
+	
+	if(!arbol->izq && !arbol->der)
+		return 1;
+	
+	size_t cantidad = 0;
+    cantidad += abb_cantidad(arbol->izq);
+    cantidad += abb_cantidad(arbol->der);
+	
+	return cantidad;
+}
 
 void abb_destruir(abb_t *arbol){
     if(!arbol)
@@ -105,7 +167,17 @@ void abb_destruir(abb_t *arbol){
  *                    PRIMITIVAS DE LA ITERACION
  * *****************************************************************/
 
-typedef struct abb_iter abb_iter_t;
+ //TODO: Creo que le falta algo mas. Pero por las dudas tiene lo mismo que cualquier nodo (+ raiz + actual).
+typedef struct abb_iter abb_iter_t {
+	abb_comparar_clave_t comparador;
+    abb_destruir_dato_t destructor;
+    void* dato;
+    const char* clave;
+	abb_t* raiz;
+	abb_t* actual;
+    abb_t* izq;
+    abb_t* der;
+}
 
 abb_iter_t *abb_iter_in_crear(const abb_t *arbol);
 
