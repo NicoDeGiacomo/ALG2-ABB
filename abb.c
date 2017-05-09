@@ -80,7 +80,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
 
 }
 
-//TODO: Se repite código en las siguientes tres funciones. Me duele pero es comportamiento binario, so...? What do?
+//TODO: Se repite c?digo en las siguientes tres funciones. Me duele pero es comportamiento binario, so...? What do?
 void *abb_borrar(abb_t *arbol, const char *clave) {
 	if(!arbol)
         return NULL;
@@ -92,12 +92,10 @@ void *abb_borrar(abb_t *arbol, const char *clave) {
 		free(arbol);
         return buffer;
     }
-	else if(arbol->comparador(arbol->clave, clave) < 0) {
+	else if(arbol->comparador(arbol->clave, clave) < 0)
 		return (abb_borrar(arbol->izq, clave));
-	}
-	else {
+	else 
 		return (abb_borrar(arbol->der, clave));
-	}
 	
 	return NULL;
 }
@@ -109,12 +107,10 @@ void *abb_obtener(const abb_t *arbol, const char *clave) {
 	if(!arbol->comparador(arbol->clave, clave)){
         return arbol->dato;
     }
-	else if(arbol->comparador(arbol->clave, clave) < 0) {
+	else if(arbol->comparador(arbol->clave, clave) < 0) 
 		return (abb_obtener(arbol->izq, clave));
-	}
-	else {
+	else 
 		return (abb_obtener(arbol->der, clave));
-	}
 	
 	return NULL;
 }
@@ -126,12 +122,10 @@ bool abb_pertenece(const abb_t *arbol, const char *clave) {
 	if(!arbol->comparador(arbol->clave, clave)){
         return true;
     }
-	else if(arbol->comparador(arbol->clave, clave) < 0) {
+	else if(arbol->comparador(arbol->clave, clave) < 0) 
 		return (abb_pertenece(arbol->izq, clave));
-	}
-	else {
+	else 
 		return (abb_pertenece(arbol->der, clave));
-	}
 	
 	return false;
 }
@@ -144,8 +138,8 @@ size_t abb_cantidad(abb_t *arbol) {
 		return 1;
 	
 	size_t cantidad = 0;
-    cantidad += abb_cantidad(arbol->izq);
-    cantidad += abb_cantidad(arbol->der);
+	cantidad += abb_cantidad(arbol->izq);
+	cantidad += abb_cantidad(arbol->der);
 	
 	return cantidad;
 }
@@ -153,12 +147,12 @@ size_t abb_cantidad(abb_t *arbol) {
 void abb_destruir(abb_t *arbol){
     if(!arbol)
         return;
-    abb_destruir(arbol->izq);
-    abb_destruir(arbol->der);
+	abb_destruir(arbol->izq);
+	abb_destruir(arbol->der);
 
-    free((void *) arbol->clave);
-    arbol->destructor(arbol->dato);
-    free(arbol);
+	free((void *) arbol->clave);
+	arbol->destructor(arbol->dato);
+	free(arbol);
 }
 
 
@@ -170,24 +164,57 @@ void abb_destruir(abb_t *arbol){
  //TODO: Creo que le falta algo mas. Pero por las dudas tiene lo mismo que cualquier nodo (+ raiz + actual).
 typedef struct abb_iter abb_iter_t {
 	abb_comparar_clave_t comparador;
-    abb_destruir_dato_t destructor;
-    void* dato;
-    const char* clave;
+	abb_destruir_dato_t destructor;
+	void* dato;
+	const char* clave;
 	abb_t* raiz;
 	abb_t* actual;
-    abb_t* izq;
-    abb_t* der;
+	abb_t* izq;
+	abb_t* der;
 }
 
-abb_iter_t *abb_iter_in_crear(const abb_t *arbol);
+//TODO: Implement me!
+abb_iter_t *abb_iter_in_crear(const abb_t *arbol) {
+	if(!arbol)
+        return NULL;
+	
+	abb_iter_t* iter = malloc(sizeof(abb_iter_t));
+	if(!iter)
+		return NULL;
+	
+	iter->comparador = arbol->comparador;
+	iter->destructor = arbol->destructor;
+	iter->dato = arbol->dato;
+	iter->clave = arbol->clave;
+	iter->raiz = arbol;
+	iter->actual = arbol;
+	iter->izq = arbol->izq;
+	iter->der = arbol->der;
+	
+	return iter;
+}
 
+//TODO: Implement me!
 bool abb_iter_in_avanzar(abb_iter_t *iter);
 
-const char *abb_iter_in_ver_actual(const abb_iter_t *iter);
+//TODO: Implement me!
+const char *abb_iter_in_ver_actual(const abb_iter_t *iter) {
+	if(!iter)
+		return NULL;
+	
+	return iter->actual->clave;
+}
 
+//TODO: Implement me!
 bool abb_iter_in_al_final(const abb_iter_t *iter);
 
-void abb_iter_in_destruir(abb_iter_t* iter);
+//TODO: Implement me!
+void abb_iter_in_destruir(abb_iter_t* iter) {
+	if(!iter)
+		return;
+	
+	free(iter);
+}
 
 
 
@@ -195,4 +222,10 @@ void abb_iter_in_destruir(abb_iter_t* iter);
  *                    PRIMITIVAS DE ITERADOR INTERNO
  * *****************************************************************/
 
-void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra);
+ //TODO: Implement me!
+void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra) {
+	abb_iter_t* iter = arbol;
+	while ((iter != NULL) && (visitar(iter->datos, extra))) {
+		abb_iter_in_avanzar(iter);
+	}
+}
