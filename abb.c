@@ -88,7 +88,16 @@ bool abb_pertenece(const abb_t *arbol, const char *clave);
 
 size_t abb_cantidad(abb_t *arbol);
 
-void abb_destruir(abb_t *arbol);
+void abb_destruir(abb_t *arbol){
+    if(!arbol)
+        return;
+    abb_destruir(arbol->izq);
+    abb_destruir(arbol->der);
+
+    free((void *) arbol->clave);
+    arbol->destructor(arbol->dato);
+    free(arbol);
+}
 
 
 
