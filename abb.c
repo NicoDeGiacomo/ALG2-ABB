@@ -100,12 +100,13 @@ void *abb_borrar(abb_t *arbol, const char *clave) {
 
         //Two children
         if(arbol->der && arbol->izq){
-            //TODO: Do this
+            //TODO: Do this - TENGO QUE PISAR LOS DATOS DEL NODO!
             ;
         }
 
         //One children
         if(!arbol->der || !arbol->izq){
+            //TODO: Do this - TENGO QUE PISAR LOS DATOS DEL NODO! (NO CREAR UNO NUEVO)
             free(arbol);
             free((void *) arbol->clave);
             *arbol = arbol->der? *arbol->der : *arbol->izq;
