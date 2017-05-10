@@ -29,6 +29,7 @@ void prueba_iterar_hash_vacio()
 void pruebas_abb_alumno(){
     prueba_crear_hash_vacio();
     prueba_iterar_hash_vacio();
+    //TODO: Seguir agregando estas funciones -> Cupiarlas de las pruebas de catedra para el hash!
     /*prueba_hash_insertar();
     prueba_hash_reemplazar();
     prueba_hash_reemplazar_con_destruir();
