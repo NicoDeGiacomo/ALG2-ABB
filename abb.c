@@ -88,7 +88,6 @@ void *abb_borrar(abb_t *arbol, const char *clave) {
 	if(!arbol->comparador(arbol->clave, clave)){
 		void *buffer = arbol->dato;
 		free((void *) arbol->clave);
-		arbol->destructor(arbol->dato);
 		free(arbol);
         return buffer;
     }
