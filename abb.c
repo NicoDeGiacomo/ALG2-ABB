@@ -86,10 +86,37 @@ void *abb_borrar(abb_t *arbol, const char *clave) {
         return NULL;
 	
 	if(!arbol->comparador(arbol->clave, clave)){
-		void *buffer = arbol->dato;
+		void* buffer = arbol->dato;
+
+
+        //No children
+        if(!arbol->der && !arbol->izq){
+            //TODO: Que pasa con el puntero que apuntaba a este nodo?
+            free(arbol);
+            free((void *) arbol->clave);
+            *arbol = NULL;
+            return buffer;
+        }
+
+        //Two children
+        if(arbol->der && arbol->izq){
+            //TODO: Do this
+            ;
+        }
+
+        //One children
+        if(!arbol->der || !arbol->izq){
+            free(arbol);
+            free((void *) arbol->clave);
+            *arbol = arbol->der? *arbol->der : *arbol->izq;
+            return buffer;
+        }
+
+
 		free((void *) arbol->clave);
 		free(arbol);
         return buffer;
+
     }
 	else if(arbol->comparador(arbol->clave, clave) < 0)
 		return (abb_borrar(arbol->izq, clave));
