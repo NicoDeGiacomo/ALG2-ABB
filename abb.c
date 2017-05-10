@@ -1,5 +1,5 @@
 #include "abb.h"
-#include <stdlib.h>
+#include "pila.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -49,7 +49,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
         if (!arbol->clave)
             return false;
 
-        strcpy(arbol->clave, clave);
+        strcpy((char *) arbol->clave, clave);
         arbol->dato = dato;
         return true;
     }
@@ -80,7 +80,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
 
 }
 
-//TODO: Se repite c?digo en las siguientes tres funciones. Me duele pero es comportamiento binario, so...? What do?
+//TODO: Se repite codigo en las siguientes tres funciones.
 void *abb_borrar(abb_t *arbol, const char *clave) {
 	if(!arbol)
         return NULL;
@@ -133,15 +133,10 @@ bool abb_pertenece(const abb_t *arbol, const char *clave) {
 size_t abb_cantidad(abb_t *arbol) {
 	if(!arbol)
         return 0;
-	
 	if(!arbol->izq && !arbol->der)
 		return 1;
-	
-	size_t cantidad = 0;
-	cantidad += abb_cantidad(arbol->izq);
-	cantidad += abb_cantidad(arbol->der);
-	
-	return cantidad;
+
+	return abb_cantidad(arbol->izq) + abb_cantidad(arbol->der);
 }
 
 void abb_destruir(abb_t *arbol){
@@ -161,59 +156,67 @@ void abb_destruir(abb_t *arbol){
  *                    PRIMITIVAS DE LA ITERACION
  * *****************************************************************/
 
- //TODO: Creo que le falta algo mas. Pero por las dudas tiene lo mismo que cualquier nodo (+ raiz + actual).
-typedef struct abb_iter abb_iter_t {
-	abb_comparar_clave_t comparador;
-	abb_destruir_dato_t destructor;
-	void* dato;
-	const char* clave;
-	abb_t* raiz;
-	abb_t* actual;
-	abb_t* izq;
-	abb_t* der;
-}
+struct abb_iter {
+	pila_t* pila;
+};
+typedef struct abb_iter abb_iter_t;
 
-//TODO: Implement me!
 abb_iter_t *abb_iter_in_crear(const abb_t *arbol) {
-	if(!arbol)
-        return NULL;
 	
 	abb_iter_t* iter = malloc(sizeof(abb_iter_t));
 	if(!iter)
 		return NULL;
-	
-	iter->comparador = arbol->comparador;
-	iter->destructor = arbol->destructor;
-	iter->dato = arbol->dato;
-	iter->clave = arbol->clave;
-	iter->raiz = arbol;
-	iter->actual = arbol;
-	iter->izq = arbol->izq;
-	iter->der = arbol->der;
+
+    iter->pila = pila_crear();
+    if(!iter->pila){
+        free(iter);
+        return NULL;
+    }
+
+    pila_apilar(iter->pila, (void *) arbol);
+
+    abb_t* arbol_izq = arbol->izq;
+    while(arbol_izq){
+        pila_apilar(iter->pila, arbol_izq);
+        arbol_izq = arbol_izq->izq;
+    }
 	
 	return iter;
 }
 
-//TODO: Implement me!
-bool abb_iter_in_avanzar(abb_iter_t *iter);
+bool abb_iter_in_avanzar(abb_iter_t *iter){
+    abb_t* desapilado = pila_desapilar(iter->pila);
+    if(!desapilado)
+        return false;
 
-//TODO: Implement me!
-const char *abb_iter_in_ver_actual(const abb_iter_t *iter) {
-	if(!iter)
-		return NULL;
-	
-	return iter->actual->clave;
+    //TODO: Hay que controllar que no falle al apilar ?
+    if (desapilado->der)
+        pila_apilar(iter->pila, desapilado->der);
+
+    //TODO: Apilo los hijos izqs del desapilado o los hijos izqs del hijo derecho del desapilado ?
+    abb_t* arbol_izq = desapilado->izq;
+    while(arbol_izq){
+        pila_apilar(iter->pila, arbol_izq);
+        arbol_izq = arbol_izq->izq;
+    }
+
+    return true;
 }
 
-//TODO: Implement me!
-bool abb_iter_in_al_final(const abb_iter_t *iter);
+const char *abb_iter_in_ver_actual(const abb_iter_t *iter) {
+    abb_t* tope = pila_ver_tope(iter->pila);
+    if (!tope)
+        return NULL;
+	return tope->clave;
+}
 
-//TODO: Implement me!
+bool abb_iter_in_al_final(const abb_iter_t *iter){
+    return pila_esta_vacia(iter->pila);
+}
+
 void abb_iter_in_destruir(abb_iter_t* iter) {
-	if(!iter)
-		return;
-	
-	free(iter);
+    pila_destruir(iter->pila);
+    free(iter);
 }
 
 
@@ -222,10 +225,12 @@ void abb_iter_in_destruir(abb_iter_t* iter) {
  *                    PRIMITIVAS DE ITERADOR INTERNO
  * *****************************************************************/
 
- //TODO: Implement me!
 void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra) {
-	abb_iter_t* iter = arbol;
-	while ((iter != NULL) && (visitar(iter->datos, extra))) {
-		abb_iter_in_avanzar(iter);
-	}
+    if(!arbol)
+        return;
+    abb_in_order(arbol->izq, visitar, extra);
+    //TODO: Esto no corta de verdad la iteracion (La funcion que llamo a esta va a seguir con el nodo correspondiente)
+    if (!visitar(arbol->clave, arbol->dato, extra))
+        return;
+    abb_in_order(arbol->der, visitar, extra);
 }
