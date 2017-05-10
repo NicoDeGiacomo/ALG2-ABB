@@ -89,24 +89,36 @@ void *abb_borrar(abb_t *arbol, const char *clave) {
 
         //No children
         if(!arbol->der && !arbol->izq){
-            //TODO: Que pasa con el puntero que apuntaba a este nodo?
-            free(arbol);
             free((void *) arbol->clave);
+            free(arbol);
             *arbol = NULL;
             return buffer;
         }
 
         //Two children
         if(arbol->der && arbol->izq){
-            //TODO: Do this - TENGO QUE PISAR LOS DATOS DEL NODO!
-            ;
+            //TODO: Desennegrar esta solucion! Elijamos el hijo mas izquierdo del hijo derecho para suplantar al nodo borrado.
+			abb_t* arbolito = arbol->der;
+			while (arbolito->izq) {
+				if(!arbolito->izq)
+					break;
+				arbolito = arbolito->izq;
+			}
+			
+			arbol->clave = arbolito->clave;
+			arbol->dato = arbolito->dato;
+			
+            free((void *) arbolito->clave);
+            free(arbolito);
+            *arbolito = *arbolito->der;
+            return buffer;
         }
 
         //One children
         if(!arbol->der || !arbol->izq){
             //TODO: Do this - TENGO QUE PISAR LOS DATOS DEL NODO! (NO CREAR UNO NUEVO)
-            free(arbol);
             free((void *) arbol->clave);
+            free(arbol);
             *arbol = arbol->der? *arbol->der : *arbol->izq;
             return buffer;
         }
@@ -211,8 +223,8 @@ bool abb_iter_in_avanzar(abb_iter_t *iter){
         return false;
 
     //TODO: Verificar este control.
-    if (desapilado->der)
-        if(!pila_apilar(iter->pila, desapilado->der)) {
+	if (desapilado->der)
+		if(!pila_apilar(iter->pila, desapilado->der)) {
 			pila_apilar(iter->pila, desapilado);
 			return false;
 		}
@@ -253,8 +265,11 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
     if(!arbol || !arbol->dato)
         return;
     abb_in_order(arbol->izq, visitar, extra);
-    //TODO: Esto no corta de verdad la iteracion (La funcion que llamo a esta va a seguir con el nodo correspondiente)
-    if (!visitar(arbol->clave, arbol->dato, extra))
+	
+    //TODO: Corta si le agregamos una variable?
+	bool seguir = false;
+    if (!seguir = visitar(arbol->clave, arbol->dato, extra))
         return;
-    abb_in_order(arbol->der, visitar, extra);
+    if(seguir) 
+		abb_in_order(arbol->der, visitar, extra);
 }
