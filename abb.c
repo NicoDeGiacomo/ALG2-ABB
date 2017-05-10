@@ -80,14 +80,12 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
 
 }
 
-//TODO: Se repite codigo en las siguientes tres funciones.
 void *abb_borrar(abb_t *arbol, const char *clave) {
 	if(!arbol || !arbol->dato)
         return NULL;
 	
 	if(!arbol->comparador(arbol->clave, clave)){
 		void* buffer = arbol->dato;
-
 
         //No children
         if(!arbol->der && !arbol->izq){
@@ -131,9 +129,8 @@ void *abb_obtener(const abb_t *arbol, const char *clave) {
 	if(!arbol || !arbol->dato)
         return NULL;
 	
-	if(!arbol->comparador(arbol->clave, clave)){
+	if(!arbol->comparador(arbol->clave, clave))
         return arbol->dato;
-    }
 	else if(arbol->comparador(arbol->clave, clave) < 0) 
 		return (abb_obtener(arbol->izq, clave));
 	else 
@@ -143,17 +140,8 @@ void *abb_obtener(const abb_t *arbol, const char *clave) {
 }
 
 bool abb_pertenece(const abb_t *arbol, const char *clave) {
-	if(!arbol || !arbol->dato)
-        return false;
-	
-	if(!arbol->comparador(arbol->clave, clave)){
-        return true;
-    }
-	else if(arbol->comparador(arbol->clave, clave) < 0) 
-		return (abb_pertenece(arbol->izq, clave));
-	else 
-		return (abb_pertenece(arbol->der, clave));
-	
+	if(abb_obtener(arbol, clave))
+		return true;	
 	return false;
 }
 
@@ -222,10 +210,13 @@ bool abb_iter_in_avanzar(abb_iter_t *iter){
     if(!desapilado)
         return false;
 
-    //TODO: Hay que controllar que no falle al apilar ?
+    //TODO: Verificar este control.
     if (desapilado->der)
-        pila_apilar(iter->pila, desapilado->der);
-
+        if(!pila_apilar(iter->pila, desapilado->der)) {
+			pila_apilar(iter->pila, desapilado);
+			return false;
+		}
+		
     //TODO: Apilo los hijos izqs del desapilado o los hijos izqs del hijo derecho del desapilado ?
     abb_t* arbol_izq = desapilado->izq;
     while(arbol_izq){
