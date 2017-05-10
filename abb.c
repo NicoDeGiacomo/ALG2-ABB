@@ -176,6 +176,9 @@ abb_iter_t *abb_iter_in_crear(const abb_t *arbol) {
         return NULL;
     }
 
+    if(!arbol->dato)
+        return iter;
+
     pila_apilar(iter->pila, (void *) arbol);
 
     abb_t* arbol_izq = arbol->izq;
