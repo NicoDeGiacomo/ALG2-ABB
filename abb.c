@@ -82,7 +82,7 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
 
 //TODO: Se repite codigo en las siguientes tres funciones.
 void *abb_borrar(abb_t *arbol, const char *clave) {
-	if(!arbol)
+	if(!arbol || !arbol->dato)
         return NULL;
 	
 	if(!arbol->comparador(arbol->clave, clave)){
@@ -101,7 +101,7 @@ void *abb_borrar(abb_t *arbol, const char *clave) {
 }
 
 void *abb_obtener(const abb_t *arbol, const char *clave) {
-	if(!arbol)
+	if(!arbol || !arbol->dato)
         return NULL;
 	
 	if(!arbol->comparador(arbol->clave, clave)){
@@ -116,7 +116,7 @@ void *abb_obtener(const abb_t *arbol, const char *clave) {
 }
 
 bool abb_pertenece(const abb_t *arbol, const char *clave) {
-	if(!arbol)
+	if(!arbol || !arbol->dato)
         return false;
 	
 	if(!arbol->comparador(arbol->clave, clave)){
@@ -131,7 +131,7 @@ bool abb_pertenece(const abb_t *arbol, const char *clave) {
 }
 
 size_t abb_cantidad(abb_t *arbol) {
-	if(!arbol)
+	if(!arbol || !arbol->dato)
         return 0;
 	if(!arbol->izq && !arbol->der)
 		return 1;
@@ -145,8 +145,11 @@ void abb_destruir(abb_t *arbol){
 	abb_destruir(arbol->izq);
 	abb_destruir(arbol->der);
 
-	free((void *) arbol->clave);
-	arbol->destructor(arbol->dato);
+    if (arbol->dato){
+        free((void *) arbol->clave);
+        arbol->destructor(arbol->dato);
+
+    }
 	free(arbol);
 }
 
@@ -226,7 +229,7 @@ void abb_iter_in_destruir(abb_iter_t* iter) {
  * *****************************************************************/
 
 void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void *extra) {
-    if(!arbol)
+    if(!arbol || !arbol->dato)
         return;
     abb_in_order(arbol->izq, visitar, extra);
     //TODO: Esto no corta de verdad la iteracion (La funcion que llamo a esta va a seguir con el nodo correspondiente)
