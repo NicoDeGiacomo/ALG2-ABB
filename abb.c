@@ -27,7 +27,7 @@ typedef struct nodo nodo_t;
 //TODO: Hacer una seccion para funciones auxiliares
 bool abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor);
 nodo_t* crear_nodo(const char *clave, void *dato);
-void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador);
+void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, bool* found);
 void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor);
 bool abb_in_order_aux(nodo_t *nodo, bool visitar(const char *, void *, void *), void *extra);
 nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor, void** dato);
@@ -164,27 +164,30 @@ nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t com
 void *abb_obtener(const abb_t *arbol, const char *clave) {
     if(!arbol || !arbol->raiz)
         return NULL;
-	
-	return abb_obtener_aux(arbol->raiz, clave, arbol->comparador);
+    bool found = false;
+	return abb_obtener_aux(arbol->raiz, clave, arbol->comparador, &found);
 }
-void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador){
+void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, bool* found){
     if(!nodo)
         return NULL;
 
-    if(!comparador(nodo->clave, clave))
+    if(!comparador(nodo->clave, clave)){
+        *found = true;
         return nodo->dato;
+    }
 
     if(comparador(nodo->clave, clave) < 0)
-        return abb_obtener_aux(nodo->izq, clave, comparador);
+        return abb_obtener_aux(nodo->izq, clave, comparador, found);
 
-    return abb_obtener_aux(nodo->der, clave, comparador);
+    return abb_obtener_aux(nodo->der, clave, comparador, found);
 
     return NULL;
 }
 
 bool abb_pertenece(const abb_t *arbol, const char *clave) {
-    //TODO: CAMBIAR ESTO! EL DATO PUEDE SER NULL!
-	return (bool) abb_obtener(arbol, clave);
+    bool found = false;
+    abb_obtener_aux(arbol->raiz, clave, arbol->comparador, &found);
+    return found;
 }
 
 size_t abb_cantidad(abb_t *arbol) {

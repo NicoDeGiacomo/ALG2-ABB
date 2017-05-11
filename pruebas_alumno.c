@@ -154,6 +154,36 @@ static void prueba_abb_borrar(){
     abb_destruir(abb);
 }
 
+static void prueba_abb_clave_vacia(){
+    abb_t* abb = abb_crear(strcmp, NULL);
+
+    char *clave = "", *valor = "";
+
+    print_test("Prueba insertar clave vacia", abb_guardar(abb, clave, valor));
+    print_test("Prueba la cantidad de elementos es 1", abb_cantidad(abb) == 1);
+    print_test("Prueba obtener clave vacia es valor", abb_obtener(abb, clave) == valor);
+    print_test("Prueba pertenece clave vacia, es true", abb_pertenece(abb, clave));
+    print_test("Prueba borrar clave vacia, es valor", abb_borrar(abb, clave) == valor);
+    print_test("Prueba la cantidad de elementos es 0", abb_cantidad(abb) == 0);
+
+    abb_destruir(abb);
+}
+
+static void prueba_abb_valor_null(){
+    abb_t* abb = abb_crear(strcmp, NULL);
+
+    char *clave = "", *valor = NULL;
+
+    /* Inserta 1 valor y luego lo borra */
+    print_test("Prueba insertar clave vacia valor NULL", abb_guardar(abb, clave, valor));
+    print_test("Prueba la cantidad de elementos es 1", abb_cantidad(abb) == 1);
+    print_test("Prueba obtener clave vacia es valor NULL", abb_obtener(abb, clave) == valor);
+    print_test("Prueba pertenece clave vacia, es true", abb_pertenece(abb, clave));
+    print_test("Prueba borrar clave vacia, es valor NULL", abb_borrar(abb, clave) == valor);
+    print_test("Prueba la cantidad de elementos es 0", abb_cantidad(abb) == 0);
+
+    abb_destruir(abb);
+}
 
 void pruebas_abb_alumno(){
     prueba_crear_abb_vacio();
@@ -163,9 +193,9 @@ void pruebas_abb_alumno(){
     prueba_abb_reemplazar();
     prueba_abb_reemplazar_con_destruir();
     prueba_abb_borrar();
-    /*prueba_abb_clave_vacia();
+    prueba_abb_clave_vacia();
     prueba_abb_valor_null();
-    prueba_abb_volumen(5000, true);
+    /*prueba_abb_volumen(5000, true);
     prueba_abb_iterar();
     prueba_abb_iterar_volumen(5000);*/
 }
