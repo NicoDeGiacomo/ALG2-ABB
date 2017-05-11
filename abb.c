@@ -187,7 +187,9 @@ size_t abb_cantidad(abb_t *arbol) {
 void abb_destruir(abb_t *arbol){
     if(!arbol)
         return;
-    return abb_destruir_aux(arbol->raiz, arbol->destructor);
+    abb_destruir_aux(arbol->raiz, arbol->destructor);
+    free(arbol);
+    return;
 }
 void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor){
     if(!nodo)
