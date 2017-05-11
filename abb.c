@@ -90,7 +90,8 @@ void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador
 
     //0 -> Iguales. <0 -> 1º mas grande. >0 2º mas grande.
     if(!comparador(raiz->clave, nodo->clave)){
-        destructor(raiz->dato);
+        if (destructor)
+            destructor(raiz->dato);
         raiz->dato = nodo->dato;
         free((void *) nodo->clave);
         free(nodo);
@@ -111,8 +112,16 @@ void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador
 void *abb_borrar(abb_t *arbol, const char *clave) {
 	if(!arbol || !arbol->raiz)
         return NULL;
-	//TODO: Checkear si la raiz es el buscado!
+
     arbol->cantidad--;
+    if(!arbol->comparador(arbol->raiz->clave, clave)){
+        void* dato = arbol->raiz->dato;
+        free((void *) arbol->raiz->clave);
+        free(arbol->raiz);
+        arbol->raiz = NULL;
+        return dato;
+    }
+
     return abb_borrar_aux(arbol->raiz, clave, arbol->comparador, arbol->destructor);
 }
 void* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor){
@@ -124,7 +133,25 @@ void* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t compa
     else if(comparador(nodo->clave, clave) > 0)
         return abb_borrar_aux(nodo->der, clave, comparador, destructor);
 
-    //TODO: Continue this!
+    //No tiene el izq o esta vacio
+    if(!nodo->izq){
+        nodo_t* tmp = nodo;
+        free((void *) nodo->clave);
+        if (nodo->der)
+            //TODO: Not so sure about this
+            *nodo = *nodo->der;
+        void* dato = tmp->dato;
+        free(tmp);
+        return dato;
+    }
+    if(!nodo->der){
+        nodo_t* tmp = nodo;
+        free((void *) nodo->clave);
+        *nodo = *nodo->izq;
+        void* dato = tmp->dato;
+        free(tmp);
+        return dato;
+    }
     return NULL;
 }
 
