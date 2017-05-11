@@ -23,11 +23,6 @@ struct nodo{
 };
 typedef struct nodo nodo_t;
 
-typedef int (*abb_comparar_clave_t) (const char *, const char *);
-
-typedef void (*abb_destruir_dato_t) (void *);
-
-
 
 //TODO: Hacer una seccion para funciones auxiliares
 void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor);
@@ -184,7 +179,7 @@ bool abb_pertenece(const abb_t *arbol, const char *clave) {
 
 size_t abb_cantidad(abb_t *arbol) {
 	if(!arbol)
-        return NULL;
+        return 0;
 
 	return arbol->cantidad;
 }
@@ -218,7 +213,6 @@ void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor){
 struct abb_iter {
 	pila_t* pila;
 };
-typedef struct abb_iter abb_iter_t;
 
 abb_iter_t *abb_iter_in_crear(const abb_t *arbol) {
     if(!arbol)
