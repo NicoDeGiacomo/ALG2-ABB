@@ -304,10 +304,71 @@ void prueba_abb_iterar(){
     abb_destruir(abb);
 }
 
+static void prueba_abb_iterar_volumen(size_t largo){
+    abb_t* abb = abb_crear(strcmp, NULL);
+
+    const size_t largo_clave = 10;
+    char (*claves)[largo_clave] = malloc(largo * largo_clave);
+
+    size_t valores[largo];
+
+    /* Inserta 'largo' parejas en el abb */
+    bool ok = true;
+    for (unsigned i = 0; i < largo; i++) {
+        sprintf(claves[i], "%08d", i);
+        valores[i] = i;
+        ok = abb_guardar(abb, claves[i], &valores[i]);
+        if (!ok) break;
+    }
+
+    // Prueba de iteración sobre las claves almacenadas.
+    abb_iter_t* iter = abb_iter_in_crear(abb);
+    print_test("Prueba abb iterador esta al final, es false", !abb_iter_in_al_final(iter));
+
+    ok = true;
+    unsigned i;
+    const char *clave;
+    size_t *valor;
+
+    for (i = 0; i < largo; i++) {
+        if ( abb_iter_in_al_final(iter) ) {
+            ok = false;
+            break;
+        }
+        clave = abb_iter_in_ver_actual(iter);
+        if ( clave == NULL ) {
+            ok = false;
+            break;
+        }
+        valor = abb_obtener(abb, clave);
+        if ( valor == NULL ) {
+            ok = false;
+            break;
+        }
+        *valor = largo;
+        abb_iter_in_avanzar(iter);
+    }
+    print_test("Prueba abb iteración en volumen", ok);
+    print_test("Prueba abb iteración en volumen, recorrio todo el largo", i == largo);
+    print_test("Prueba abb iterador esta al final, es true", abb_iter_in_al_final(iter));
+
+    ok = true;
+    for (i = 0; i < largo; i++) {
+        if ( valores[i] != largo ) {
+            ok = false;
+            break;
+        }
+    }
+    print_test("Prueba abb iteración en volumen, se cambiaron todo los elementos", ok);
+
+    free(claves);
+    abb_iter_in_destruir(iter);
+    abb_destruir(abb);
+}
+
 void pruebas_abb_alumno(){
     prueba_crear_abb_vacio();
     prueba_iterar_abb_vacio();
-    //TODO: Seguir agregando estas funciones -> Cupiarlas de las pruebas de catedra para el hash!
     prueba_abb_insertar();
     prueba_abb_reemplazar();
     prueba_abb_reemplazar_con_destruir();
@@ -316,5 +377,5 @@ void pruebas_abb_alumno(){
     prueba_abb_valor_null();
     prueba_abb_volumen(500, true);
     prueba_abb_iterar();
-    /*prueba_abb_iterar_volumen(5000);*/
+    prueba_abb_iterar_volumen(500);
 }
