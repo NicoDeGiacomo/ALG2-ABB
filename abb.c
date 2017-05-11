@@ -30,7 +30,7 @@ nodo_t* crear_nodo(const char *clave, void *dato);
 void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador);
 void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor);
 bool abb_in_order_aux(nodo_t *nodo, bool visitar(const char *, void *, void *), void *extra);
-void* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor);
+nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor, void** dato);
 /* ******************************************************************
  *                    PRIMITIVAS DEL ABB
  * *****************************************************************/
@@ -107,49 +107,57 @@ bool abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador
 
 
 void *abb_borrar(abb_t *arbol, const char *clave) {
-	if(!arbol || !arbol->raiz)
+	if(!arbol || !arbol->raiz || !abb_pertenece(arbol, clave))
         return NULL;
 
     arbol->cantidad--;
-    if(!arbol->comparador(arbol->raiz->clave, clave)){
-        void* dato = arbol->raiz->dato;
-        free((void *) arbol->raiz->clave);
-        free(arbol->raiz);
-        arbol->raiz = NULL;
-        return dato;
-    }
+    void* dato = NULL;
 
-    return abb_borrar_aux(arbol->raiz, clave, arbol->comparador, arbol->destructor);
+    arbol->raiz = abb_borrar_aux(arbol->raiz, clave, arbol->comparador, arbol->destructor, &dato);
+
+    return dato;
 }
-void* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor){
+nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor, void** dato){
     if(!nodo)
         return NULL;
 
-    if(comparador(nodo->clave, clave) < 0)
-        return abb_borrar_aux(nodo->izq, clave, comparador, destructor);
-    else if(comparador(nodo->clave, clave) > 0)
-        return abb_borrar_aux(nodo->der, clave, comparador, destructor);
+    if(comparador(nodo->clave, clave) < 0){
+        nodo->izq = abb_borrar_aux(nodo->izq, clave, comparador, destructor, dato);
+        return nodo;
+    }
+    else if(comparador(nodo->clave, clave) > 0) {
+        nodo->der = abb_borrar_aux(nodo->der, clave, comparador, destructor, dato);
+        return nodo;
+    }
 
-    //No tiene el izq o esta vacio
+    //No tiene el izq o (o ninguno)
     if(!nodo->izq){
-        nodo_t* tmp = nodo;
+        *dato = nodo->dato;
+        nodo_t* tmp = nodo->der;
         free((void *) nodo->clave);
-        if (nodo->der)
-            //TODO: Not so sure about this
-            *nodo = *nodo->der;
-        void* dato = tmp->dato;
-        free(tmp);
-        return dato;
+        free(nodo);
+        return tmp;
     }
     if(!nodo->der){
-        nodo_t* tmp = nodo;
+        *dato = nodo->dato;
+        nodo_t* tmp = nodo->izq;
         free((void *) nodo->clave);
-        *nodo = *nodo->izq;
-        void* dato = tmp->dato;
-        free(tmp);
-        return dato;
+        free(nodo);
+        return tmp;
     }
-    return NULL;
+    //TODO: ¡¿Si tiene dos hijos?!
+    //Tiene dos hijos -> Busco el mayor de los menores
+    nodo_t* reemplazo = nodo->izq;
+    while (reemplazo->der)
+        reemplazo = reemplazo->der;
+
+    nodo->clave = reemplazo->clave;
+    nodo->dato = reemplazo->dato;
+
+    //Eliminar reemplazo (No la clave, ahora la usa 'nodo')
+    free(reemplazo);
+
+    return nodo;
 }
 
 

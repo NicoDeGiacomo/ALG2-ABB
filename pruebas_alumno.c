@@ -117,6 +117,43 @@ static void prueba_abb_reemplazar_con_destruir(){
     abb_destruir(abb);
 }
 
+static void prueba_abb_borrar(){
+    abb_t* abb = abb_crear(strcmp, NULL);
+
+    char *clave1 = "perro", *valor1 = "guau";
+    char *clave2 = "gato", *valor2 = "miau";
+    char *clave3 = "vaca", *valor3 = "mu";
+
+    /* Inserta 3 valores y luego los borra */
+    print_test("Prueba insertar clave1", abb_guardar(abb, clave1, valor1));
+    print_test("Prueba insertar clave2", abb_guardar(abb, clave2, valor2));
+    print_test("Prueba insertar clave3", abb_guardar(abb, clave3, valor3));
+
+    /* Al borrar cada elemento comprueba que ya no está pero los otros sí. */
+    print_test("Prueba pertenece clave3, es verdadero", abb_pertenece(abb, clave3));
+    print_test("Prueba borrar clave3, es valor3", abb_borrar(abb, clave3) == valor3);
+    print_test("Prueba borrar clave3, es NULL", !abb_borrar(abb, clave3));
+    print_test("Prueba pertenece clave3, es falso", !abb_pertenece(abb, clave3));
+    print_test("Prueba obtener clave3, es NULL", !abb_obtener(abb, clave3));
+    print_test("Prueba la cantidad de elementos es 2", abb_cantidad(abb) == 2);
+
+    print_test("Prueba pertenece clave1, es verdadero", abb_pertenece(abb, clave1));
+    print_test("Prueba borrar clave1, es valor1", abb_borrar(abb, clave1) == valor1);
+    print_test("Prueba borrar clave1, es NULL", !abb_borrar(abb, clave3));
+    print_test("Prueba pertenece clave1, es falso", !abb_pertenece(abb, clave1));
+    print_test("Prueba obtener clave1, es NULL", !abb_obtener(abb, clave1));
+    print_test("Prueba la cantidad de elementos es 1", abb_cantidad(abb) == 1);
+
+    print_test("Prueba pertenece clave2, es verdadero", abb_pertenece(abb, clave2));
+    print_test("Prueba borrar clave2, es valor2", abb_borrar(abb, clave2) == valor2);
+    print_test("Prueba borrar clave2, es NULL", !abb_borrar(abb, clave3));
+    print_test("Prueba pertenece clave2, es falso", !abb_pertenece(abb, clave2));
+    print_test("Prueba obtener clave2, es NULL", !abb_obtener(abb, clave2));
+    print_test("Prueba la cantidad de elementos es 0", abb_cantidad(abb) == 0);
+
+    abb_destruir(abb);
+}
+
 
 void pruebas_abb_alumno(){
     prueba_crear_abb_vacio();
@@ -125,8 +162,8 @@ void pruebas_abb_alumno(){
     prueba_abb_insertar();
     prueba_abb_reemplazar();
     prueba_abb_reemplazar_con_destruir();
-    /*prueba_abb_borrar();
-    prueba_abb_clave_vacia();
+    prueba_abb_borrar();
+    /*prueba_abb_clave_vacia();
     prueba_abb_valor_null();
     prueba_abb_volumen(5000, true);
     prueba_abb_iterar();
