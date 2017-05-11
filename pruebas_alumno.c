@@ -378,4 +378,5 @@ void pruebas_abb_alumno(){
     prueba_abb_volumen(500, true);
     prueba_abb_iterar();
     prueba_abb_iterar_volumen(500);
+    //TODO: Faltan pruebas de iterador interno!
 }
