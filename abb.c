@@ -262,15 +262,12 @@ bool abb_iter_in_avanzar(abb_iter_t *iter){
     if(!desapilado)
         return false;
 
-    //TODO: Verificar este control.
-	if (desapilado->der)
-		if(!pila_apilar(iter->pila, desapilado->der)) {
-			pila_apilar(iter->pila, desapilado);
-			return false;
-		}
-		
-    //TODO: Apilo los hijos izqs del desapilado o los hijos izqs del hijo derecho del desapilado ?
-    nodo_t* arbol_izq = desapilado->izq;
+	if (!desapilado->der)
+        return true;
+
+    pila_apilar(iter->pila, desapilado->der);
+
+    nodo_t* arbol_izq = desapilado->der->izq;
     while(arbol_izq){
         pila_apilar(iter->pila, arbol_izq);
         arbol_izq = arbol_izq->izq;
