@@ -35,6 +35,7 @@ nodo_t* crear_nodo(const char *clave, void *dato);
 void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador);
 void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor);
 bool abb_in_order_aux(nodo_t *nodo, bool visitar(const char *, void *, void *), void *extra);
+void* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor);
 /* ******************************************************************
  *                    PRIMITIVAS DEL ABB
  * *****************************************************************/
@@ -110,9 +111,23 @@ void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador
 void *abb_borrar(abb_t *arbol, const char *clave) {
 	if(!arbol || !arbol->raiz)
         return NULL;
-	//TODO: Implement me!
+	//TODO: Checkear si la raiz es el buscado!
+    arbol->cantidad--;
+    return abb_borrar_aux(arbol->raiz, clave, arbol->comparador, arbol->destructor);
+}
+void* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor){
+    if(!nodo)
+        return NULL;
+
+    if(comparador(nodo->clave, clave) < 0)
+        return abb_borrar_aux(nodo->izq, clave, comparador, destructor);
+    else if(comparador(nodo->clave, clave) > 0)
+        return abb_borrar_aux(nodo->der, clave, comparador, destructor);
+
+    //TODO: Continue this!
     return NULL;
 }
+
 
 void *abb_obtener(const abb_t *arbol, const char *clave) {
     if(!arbol || !arbol->raiz)
