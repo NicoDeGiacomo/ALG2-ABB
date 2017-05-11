@@ -73,10 +73,16 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
         return NULL;
 
     nodo_t* nodo = crear_nodo(clave, dato);
-    if (!dato)
+    if (!nodo)
         return false;
-    abb_guardar_aux(arbol->raiz, nodo, arbol->comparador, arbol->destructor);
+
     arbol->cantidad++;
+
+    if(!arbol->raiz){
+        arbol->raiz = nodo;
+        return true;
+    }
+    abb_guardar_aux(arbol->raiz, nodo, arbol->comparador, arbol->destructor);
     return true;
 }
 void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor){
@@ -155,7 +161,8 @@ void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor){
     //TODO: Si la clave es "" evalua false ?!
     if (nodo->clave){
         free((void *) nodo->clave);
-        destructor(nodo->dato);
+        if(destructor)
+            destructor(nodo->dato);
     }
     free(nodo);
 }

@@ -65,8 +65,8 @@ void pruebas_abb_alumno(){
     prueba_crear_abb_vacio();
     prueba_iterar_abb_vacio();
     //TODO: Seguir agregando estas funciones -> Cupiarlas de las pruebas de catedra para el abb!
-    /*prueba_abb_insertar();
-    prueba_abb_reemplazar();
+    prueba_abb_insertar();
+    /*prueba_abb_reemplazar();
     prueba_abb_reemplazar_con_destruir();
     prueba_abb_borrar();
     prueba_abb_clave_vacia();
