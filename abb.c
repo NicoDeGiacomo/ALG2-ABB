@@ -25,7 +25,7 @@ typedef struct nodo nodo_t;
 
 
 //TODO: Hacer una seccion para funciones auxiliares
-void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor);
+bool abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor);
 nodo_t* crear_nodo(const char *clave, void *dato);
 void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador);
 void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor);
@@ -72,16 +72,16 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
     if (!nodo)
         return false;
 
-    arbol->cantidad++;
-
     if(!arbol->raiz){
+        arbol->cantidad++;
         arbol->raiz = nodo;
         return true;
     }
-    abb_guardar_aux(arbol->raiz, nodo, arbol->comparador, arbol->destructor);
+    if(abb_guardar_aux(arbol->raiz, nodo, arbol->comparador, arbol->destructor))
+        arbol->cantidad++;
     return true;
 }
-void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor){
+bool abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor){
 
     //0 -> Iguales. <0 -> 1º mas grande. >0 2º mas grande.
     if(!comparador(raiz->clave, nodo->clave)){
@@ -90,6 +90,7 @@ void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador
         raiz->dato = nodo->dato;
         free((void *) nodo->clave);
         free(nodo);
+        return false;
     }
 
     if(comparador(raiz->clave, nodo->clave) < 0){
@@ -101,6 +102,7 @@ void abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador
             return abb_guardar_aux(raiz->der, nodo, comparador, destructor);
         raiz->der = nodo;
     }
+    return true;
 }
 
 

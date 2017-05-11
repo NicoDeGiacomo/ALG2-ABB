@@ -26,11 +26,8 @@ void prueba_iterar_abb_vacio(){
     abb_destruir(abb);
 }
 
-int comparar_clave (const char * clave1, const char * clave2){
-    return strcmp(clave1, clave2);
-}
 void prueba_abb_insertar(){
-    abb_t* abb = abb_crear(comparar_clave, NULL);
+    abb_t* abb = abb_crear(strcmp, NULL);
 
     char *clave1 = "perro", *valor1 = "guau";
     char *clave2 = "gato", *valor2 = "miau";
@@ -61,13 +58,39 @@ void prueba_abb_insertar(){
     abb_destruir(abb);
 }
 
+static void prueba_abb_reemplazar(){
+    abb_t* abb = abb_crear(strcmp, NULL);
+
+    char *clave1 = "perro", *valor1a = "guau", *valor1b = "warf";
+    char *clave2 = "gato", *valor2a = "miau", *valor2b = "meaow";
+
+    /* Inserta 2 valores y luego los reemplaza */
+    print_test("Prueba insertar clave1", abb_guardar(abb, clave1, valor1a));
+    print_test("Prueba obtener clave1 es valor1a", abb_obtener(abb, clave1) == valor1a);
+    print_test("Prueba obtener clave1 es valor1a", abb_obtener(abb, clave1) == valor1a);
+    print_test("Prueba insertar clave2", abb_guardar(abb, clave2, valor2a));
+    print_test("Prueba obtener clave2 es valor2a", abb_obtener(abb, clave2) == valor2a);
+    print_test("Prueba obtener clave2 es valor2a", abb_obtener(abb, clave2) == valor2a);
+    print_test("Prueba la cantidad de elementos es 2", abb_cantidad(abb) == 2);
+
+    print_test("Prueba insertar clave1 con otro valor", abb_guardar(abb, clave1, valor1b));
+    print_test("Prueba obtener clave1 es valor1b", abb_obtener(abb, clave1) == valor1b);
+    print_test("Prueba obtener clave1 es valor1b", abb_obtener(abb, clave1) == valor1b);
+    print_test("Prueba insertar clave2 con otro valor", abb_guardar(abb, clave2, valor2b));
+    print_test("Prueba obtener clave2 es valor2b", abb_obtener(abb, clave2) == valor2b);
+    print_test("Prueba obtener clave2 es valor2b", abb_obtener(abb, clave2) == valor2b);
+    print_test("Prueba la cantidad de elementos es 2", abb_cantidad(abb) == 2);
+
+    abb_destruir(abb);
+}
+
 void pruebas_abb_alumno(){
     prueba_crear_abb_vacio();
     prueba_iterar_abb_vacio();
-    //TODO: Seguir agregando estas funciones -> Cupiarlas de las pruebas de catedra para el abb!
+    //TODO: Seguir agregando estas funciones -> Cupiarlas de las pruebas de catedra para el hash!
     prueba_abb_insertar();
-    /*prueba_abb_reemplazar();
-    prueba_abb_reemplazar_con_destruir();
+    prueba_abb_reemplazar();
+    /*prueba_abb_reemplazar_con_destruir();
     prueba_abb_borrar();
     prueba_abb_clave_vacia();
     prueba_abb_valor_null();
