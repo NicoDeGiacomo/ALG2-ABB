@@ -42,6 +42,7 @@ void prueba_insertar(){
     print_test("Prueba obtener clave1 es valor1", abb_obtener(abb, clave1) == valor1);
     print_test("Prueba pertenece clave1, es true", abb_pertenece(abb, clave1));
     print_test("Prueba borrar clave1, es valor1", abb_borrar(abb, clave1) == valor1);
+    print_test("Prueba borrar clave1, es NULL", !abb_borrar(abb, clave1));
     print_test("Prueba la cantidad de elementos es 0", abb_cantidad(abb) == 0);
 
     /* Inserta otros 2 valores y no los borra (se destruyen con el abb) */

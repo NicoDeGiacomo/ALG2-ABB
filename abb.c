@@ -152,10 +152,14 @@ nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t com
         reemplazo = reemplazo->der;
 
     free((void *) nodo->clave);
-    *dato = nodo->dato;
+
     nodo->clave = malloc(sizeof(char) * (strlen(reemplazo->clave) +1) );
     strcpy((char *) nodo->clave, reemplazo->clave);
+
+    *dato = nodo->dato;
     nodo->dato = reemplazo->dato;
+    nodo->izq = reemplazo->izq;
+    nodo->der = reemplazo->der;
 
     free((void *) reemplazo->clave);
     free(reemplazo);
