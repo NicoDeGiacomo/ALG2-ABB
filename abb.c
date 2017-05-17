@@ -145,7 +145,7 @@ nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t com
         free(nodo);
         return tmp;
     }
-    //TODO: ¡¿Si tiene dos hijos?!
+
     //Tiene dos hijos -> Busco el mayor de los menores
     nodo_t* reemplazo = nodo->izq;
     while (reemplazo->der)
@@ -153,10 +153,11 @@ nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t com
 
     free((void *) nodo->clave);
     *dato = nodo->dato;
-    nodo->clave = reemplazo->clave;
+    nodo->clave = malloc(sizeof(char) * (strlen(reemplazo->clave) +1) );
+    strcpy((char *) nodo->clave, reemplazo->clave);
     nodo->dato = reemplazo->dato;
 
-    //Eliminar reemplazo (No la clave, ahora la usa 'nodo')
+    free((void *) reemplazo->clave);
     free(reemplazo);
 
     return nodo;
@@ -212,8 +213,7 @@ void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor){
     abb_destruir_aux(nodo->izq, destructor);
     abb_destruir_aux(nodo->der, destructor);
 
-    //TODO: Si la clave es "" evalua false ?!
-    if (nodo->clave){
+    if (nodo->clave != NULL){
         free((void *) nodo->clave);
         if(destructor)
             destructor(nodo->dato);

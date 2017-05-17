@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "abb.h"
 #include "testing.h"
+#include <stdlib.h>
 
 void prueba_crear_vacio(){
     abb_t* abb = abb_crear(NULL, NULL);
