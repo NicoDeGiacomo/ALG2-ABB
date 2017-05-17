@@ -150,6 +150,8 @@ nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t com
     while (reemplazo->der)
         reemplazo = reemplazo->der;
 
+    free((void *) nodo->clave);
+    *dato = nodo->dato;
     nodo->clave = reemplazo->clave;
     nodo->dato = reemplazo->dato;
 
