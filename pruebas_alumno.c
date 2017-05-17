@@ -245,9 +245,9 @@ void prueba_volumen(size_t largo) {
 
 }
 
-ssize_t buscar(const char* clave, char* claves[], size_t largo) {
+int buscar(const char* clave, char* claves[], size_t largo) {
     for (size_t i = 0; i < largo; i++) {
-        if (strcmp(clave, claves[i]) == 0) return (ssize_t) i;
+        if (strcmp(clave, claves[i]) == 0) return (int) i;
     }
     return -1;
 }
@@ -266,7 +266,7 @@ void prueba_iterar(){
     // Prueba de iteración sobre las claves almacenadas.
     abb_iter_t* iter = abb_iter_in_crear(abb);
     const char *clave;
-    ssize_t indice;
+    int indice;
 
     print_test("Prueba iterador esta al final, es false", !abb_iter_in_al_final(iter));
 
