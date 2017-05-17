@@ -3,7 +3,7 @@
 #include "abb.h"
 #include "testing.h"
 
-void prueba_crear_abb_vacio(){
+void prueba_crear_vacio(){
     abb_t* abb = abb_crear(NULL, NULL);
 
     print_test("Prueba crear abb", (bool) abb);
@@ -15,19 +15,19 @@ void prueba_crear_abb_vacio(){
     abb_destruir(abb);
 }
 
-void prueba_iterar_abb_vacio(){
+void prueba_iterar_vacio(){
     abb_t* abb = abb_crear(NULL, NULL);
     abb_iter_t* iter = abb_iter_in_crear(abb);
-    print_test("Prueba abb iter crear iterador abb vacio", (bool) iter);
-    print_test("Prueba abb iter esta al final", abb_iter_in_al_final(iter));
-    print_test("Prueba abb iter avanzar es false", !abb_iter_in_avanzar(iter));
-    print_test("Prueba abb iter ver actual es NULL", !abb_iter_in_ver_actual(iter));
+    print_test("Prueba iter crear iterador abb vacio", (bool) iter);
+    print_test("Prueba iter esta al final", abb_iter_in_al_final(iter));
+    print_test("Prueba iter avanzar es false", !abb_iter_in_avanzar(iter));
+    print_test("Prueba iter ver actual es NULL", !abb_iter_in_ver_actual(iter));
 
     abb_iter_in_destruir(iter);
     abb_destruir(abb);
 }
 
-void prueba_abb_insertar(){
+void prueba_insertar(){
     abb_t* abb = abb_crear(strcmp, NULL);
 
     char *clave1 = "perro", *valor1 = "guau";
@@ -59,7 +59,7 @@ void prueba_abb_insertar(){
     abb_destruir(abb);
 }
 
-void prueba_abb_reemplazar(){
+void prueba_reemplazar(){
     abb_t* abb = abb_crear(strcmp, NULL);
 
     char *clave1 = "perro", *valor1a = "guau", *valor1b = "warf";
@@ -85,7 +85,7 @@ void prueba_abb_reemplazar(){
     abb_destruir(abb);
 }
 
-void prueba_abb_reemplazar_con_destruir(){
+void prueba_reemplazar_con_destruir(){
     abb_t* abb = abb_crear(strcmp, free);
 
     char *clave1 = "perro", *valor1a, *valor1b;
@@ -118,7 +118,7 @@ void prueba_abb_reemplazar_con_destruir(){
     abb_destruir(abb);
 }
 
-void prueba_abb_borrar(){
+void prueba_borrar(){
     abb_t* abb = abb_crear(strcmp, NULL);
 
     char *clave1 = "perro", *valor1 = "guau";
@@ -155,7 +155,7 @@ void prueba_abb_borrar(){
     abb_destruir(abb);
 }
 
-void prueba_abb_clave_vacia(){
+void prueba_clave_vacia(){
     abb_t* abb = abb_crear(strcmp, NULL);
 
     char *clave = "", *valor = "";
@@ -170,7 +170,7 @@ void prueba_abb_clave_vacia(){
     abb_destruir(abb);
 }
 
-void prueba_abb_valor_null(){
+void prueba_valor_null(){
     abb_t* abb = abb_crear(strcmp, NULL);
 
     char *clave = "", *valor = NULL;
@@ -186,7 +186,7 @@ void prueba_abb_valor_null(){
     abb_destruir(abb);
 }
 
-void prueba_abb_volumen(size_t largo, bool debug) {
+void prueba_volumen(size_t largo) {
     abb_t* abb = abb_crear(strcmp, NULL);
 
     const size_t largo_clave = 10;
@@ -204,8 +204,8 @@ void prueba_abb_volumen(size_t largo, bool debug) {
         if (!ok) break;
     }
 
-    if (debug) print_test("Prueba abb almacenar muchos elementos", ok);
-    if (debug) print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb) == largo);
+    print_test("Prueba almacenar muchos elementos", ok);
+    print_test("Prueba la cantidad de elementos es correcta", abb_cantidad(abb) == largo);
 
     /* Verifica que devuelva los valores correctos */
     for (size_t i = 0; i < largo; i++) {
@@ -215,8 +215,8 @@ void prueba_abb_volumen(size_t largo, bool debug) {
         if (!ok) break;
     }
 
-    if (debug) print_test("Prueba abb pertenece y obtener muchos elementos", ok);
-    if (debug) print_test("Prueba abb la cantidad de elementos es correcta", abb_cantidad(abb) == largo);
+    print_test("Prueba pertenece y obtener muchos elementos", ok);
+    print_test("Prueba la cantidad de elementos es correcta", abb_cantidad(abb) == largo);
 
     /* Verifica que borre y devuelva los valores correctos */
     for (size_t i = 0; i < largo; i++) {
@@ -224,8 +224,8 @@ void prueba_abb_volumen(size_t largo, bool debug) {
         if (!ok) break;
     }
 
-    if (debug) print_test("Prueba abb borrar muchos elementos", ok);
-    if (debug) print_test("Prueba abb la cantidad de elementos es 0", abb_cantidad(abb) == 0);
+    print_test("Prueba borrar muchos elementos", ok);
+    print_test("Prueba la cantidad de elementos es 0", abb_cantidad(abb) == 0);
 
     /* Destruye el abb y crea uno nuevo que sí libera */
     abb_destruir(abb);
@@ -252,7 +252,7 @@ ssize_t buscar(const char* clave, char* claves[], size_t largo) {
     return -1;
 }
 
-void prueba_abb_iterar(){
+void prueba_iterar(){
     abb_t* abb = abb_crear(strcmp, NULL);
 
     char *claves[] = {"perro", "gato", "vaca"};
@@ -304,7 +304,7 @@ void prueba_abb_iterar(){
     abb_destruir(abb);
 }
 
-static void prueba_abb_iterar_volumen(size_t largo){
+static void prueba_iterar_volumen(size_t largo){
     abb_t* abb = abb_crear(strcmp, NULL);
 
     const size_t largo_clave = 10;
@@ -323,7 +323,7 @@ static void prueba_abb_iterar_volumen(size_t largo){
 
     // Prueba de iteración sobre las claves almacenadas.
     abb_iter_t* iter = abb_iter_in_crear(abb);
-    print_test("Prueba abb iterador esta al final, es false", !abb_iter_in_al_final(iter));
+    print_test("Prueba iterador esta al final, es false", !abb_iter_in_al_final(iter));
 
     ok = true;
     unsigned i;
@@ -348,9 +348,9 @@ static void prueba_abb_iterar_volumen(size_t largo){
         *valor = largo;
         abb_iter_in_avanzar(iter);
     }
-    print_test("Prueba abb iteración en volumen", ok);
-    print_test("Prueba abb iteración en volumen, recorrio todo el largo", i == largo);
-    print_test("Prueba abb iterador esta al final, es true", abb_iter_in_al_final(iter));
+    print_test("Prueba iteración en volumen", ok);
+    print_test("Prueba iteración en volumen, recorrio todo el largo", i == largo);
+    print_test("Prueba iterador esta al final, es true", abb_iter_in_al_final(iter));
 
     ok = true;
     for (i = 0; i < largo; i++) {
@@ -359,24 +359,63 @@ static void prueba_abb_iterar_volumen(size_t largo){
             break;
         }
     }
-    print_test("Prueba abb iteración en volumen, se cambiaron todo los elementos", ok);
+    print_test("Prueba iteración en volumen, se cambiaron todo los elementos", ok);
 
     free(claves);
     abb_iter_in_destruir(iter);
     abb_destruir(abb);
 }
 
+bool verificar_orden(const char * clave, void* dato, void* contador){
+    (*(int *)contador) *= 10;
+    (*(int *)contador) += (*(int *)dato);
+    return true;
+}
+
+bool verificar_corte(const char * clave, void* dato, void* contador){
+    (*(int *)contador)+=1;
+    if (*(int*)contador == 2){
+        return false;
+    }
+    return true;
+}
+
+void pruebas_iterador_interno(){
+    char a = 'a';
+    char b = 'b';
+    char c = 'c';
+    int ai = 1;
+    int bi = 2;
+    int ci = 3;
+
+    abb_t* abb = abb_crear(strcmp, NULL);
+    abb_guardar(abb, &b, &bi);
+    abb_guardar(abb, &c, &ci);
+    abb_guardar(abb, &a, &ai);
+
+    int contador = 0;
+    abb_in_order(abb, verificar_orden, &contador);
+    print_test("Prueba orden de iteracion interna", contador == 123 );
+
+    contador = 0;
+    abb_in_order(abb, verificar_corte, &contador);
+    print_test("Contador es 2", contador == 2);
+
+    abb_destruir(abb);
+}
+
 void pruebas_abb_alumno(){
-    prueba_crear_abb_vacio();
-    prueba_iterar_abb_vacio();
-    prueba_abb_insertar();
-    prueba_abb_reemplazar();
-    prueba_abb_reemplazar_con_destruir();
-    prueba_abb_borrar();
-    prueba_abb_clave_vacia();
-    prueba_abb_valor_null();
-    prueba_abb_volumen(500, true);
-    prueba_abb_iterar();
-    prueba_abb_iterar_volumen(500);
+    prueba_crear_vacio();
+    prueba_iterar_vacio();
+    prueba_insertar();
+    prueba_reemplazar();
+    prueba_reemplazar_con_destruir();
+    prueba_borrar();
+    prueba_clave_vacia();
+    prueba_valor_null();
+    prueba_volumen(500);
+    prueba_iterar();
+    prueba_iterar_volumen(500);
+    pruebas_iterador_interno();
     //TODO: Faltan pruebas de iterador interno!
 }

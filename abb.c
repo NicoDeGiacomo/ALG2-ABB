@@ -83,7 +83,6 @@ bool abb_guardar(abb_t *arbol, const char *clave, void *dato){
 }
 bool abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor){
 
-    //0 -> Iguales. <0 -> 1º mas grande. >0 2º mas grande.
     if(!comparador(raiz->clave, nodo->clave)){
         if (destructor)
             destructor(raiz->dato);
@@ -93,7 +92,7 @@ bool abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador
         return false;
     }
 
-    if(comparador(raiz->clave, nodo->clave) < 0){
+    if(comparador(raiz->clave, nodo->clave) > 0){
         if(raiz->izq)
             return abb_guardar_aux(raiz->izq, nodo, comparador, destructor);
         raiz->izq = nodo;
@@ -121,11 +120,11 @@ nodo_t* abb_borrar_aux(nodo_t *nodo, const char *clave, abb_comparar_clave_t com
     if(!nodo)
         return NULL;
 
-    if(comparador(nodo->clave, clave) < 0){
+    if(comparador(nodo->clave, clave) > 0){
         nodo->izq = abb_borrar_aux(nodo->izq, clave, comparador, destructor, dato);
         return nodo;
     }
-    else if(comparador(nodo->clave, clave) > 0) {
+    else if(comparador(nodo->clave, clave) < 0) {
         nodo->der = abb_borrar_aux(nodo->der, clave, comparador, destructor, dato);
         return nodo;
     }
@@ -176,7 +175,7 @@ void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_
         return nodo->dato;
     }
 
-    if(comparador(nodo->clave, clave) < 0)
+    if(comparador(nodo->clave, clave) > 0)
         return abb_obtener_aux(nodo->izq, clave, comparador, found);
 
     return abb_obtener_aux(nodo->der, clave, comparador, found);
@@ -305,7 +304,7 @@ void abb_in_order(abb_t *arbol, bool visitar(const char *, void *, void *), void
 }
 bool abb_in_order_aux(nodo_t *nodo, bool visitar(const char *, void *, void *), void *extra){
     if (!nodo)
-        return false;
+        return true;
 
     if(!abb_in_order_aux(nodo->izq, visitar, extra))
         return false;
@@ -316,5 +315,5 @@ bool abb_in_order_aux(nodo_t *nodo, bool visitar(const char *, void *, void *), 
     if(!abb_in_order_aux(nodo->der, visitar, extra))
         return false;
 
-    return false;
+    return true;
 }
