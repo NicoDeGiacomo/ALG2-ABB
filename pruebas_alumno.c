@@ -59,6 +59,20 @@ void prueba_insertar(){
     print_test("Prueba pertenece clave3, es true", abb_pertenece(abb, clave3));
 
     abb_destruir(abb);
+
+    abb = abb_crear(strcmp, NULL);
+    int uno = 1;
+    int dos = 2;
+    int tres = 3;
+    print_test("Prueba insertar clave2", abb_guardar(abb, "2", &dos));
+    print_test("Prueba insertar clave1", abb_guardar(abb, "1", &uno));
+    print_test("Prueba insertar clave3", abb_guardar(abb, "3", &tres));
+
+    print_test("Prueba borrar clave2, es valor2", abb_borrar(abb, "2") == &dos);
+    print_test("Prueba borrar clave1, es valor1", abb_borrar(abb, "1") == &uno);
+    print_test("Prueba borrar clave3, es valor3", abb_borrar(abb, "3") == &tres);
+
+    abb_destruir(abb);
 }
 
 void prueba_reemplazar(){
