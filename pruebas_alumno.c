@@ -72,6 +72,26 @@ void prueba_insertar(){
     print_test("Prueba borrar clave1, es valor1", abb_borrar(abb, "1") == &uno);
     print_test("Prueba borrar clave3, es valor3", abb_borrar(abb, "3") == &tres);
 
+    //1 4 2 3 5 6 7
+    int cuatro = 4;
+    int cinco = 5;
+    int seis = 6;
+    int siete = 7;
+    print_test("Prueba insertar clave2", abb_guardar(abb, "1", &uno));
+    print_test("Prueba insertar clave1", abb_guardar(abb, "4", &cuatro));
+    print_test("Prueba insertar clave3", abb_guardar(abb, "2", &dos));
+    print_test("Prueba insertar clave2", abb_guardar(abb, "3", &tres));
+    print_test("Prueba insertar clave1", abb_guardar(abb, "5", &cinco));
+    print_test("Prueba insertar clave3", abb_guardar(abb, "6", &seis));
+    print_test("Prueba insertar clave3", abb_guardar(abb, "7", &siete));
+
+    print_test("Prueba borrar clave1, es valor1", abb_borrar(abb, "1") == &uno);
+    print_test("Prueba borrar clave4, es valor4", abb_borrar(abb, "4") == &cuatro);
+    print_test("Prueba borrar clave2, es valor2", abb_borrar(abb, "2") == &dos);
+    print_test("Prueba borrar clave3, es valor3", abb_borrar(abb, "3") == &tres);
+    print_test("Prueba borrar clave5, es valor5", abb_borrar(abb, "5") == &cinco);
+    print_test("Prueba borrar clave6, es valor6", abb_borrar(abb, "6") == &seis);
+    print_test("Prueba borrar clave7, es valor7", abb_borrar(abb, "7") == &siete);
     abb_destruir(abb);
 }
 
