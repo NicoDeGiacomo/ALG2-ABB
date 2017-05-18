@@ -25,13 +25,31 @@ struct nodo{
 typedef struct nodo nodo_t;
 
 
-//TODO: Hacer una seccion para funciones auxiliares
+
+/* ******************************************************************
+ *                    FUNCIONES AUXULIARES
+ * *****************************************************************/
+
+//Funcion recursiva para guardar un nodo
 bool abb_guardar_aux(nodo_t* raiz, nodo_t* nodo, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor);
+
+//Crea un nodo
 nodo_t* crear_nodo(const char *clave, void *dato);
+
+//Funcion recursiva para obtener un nodo
 void *abb_obtener_aux(const nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, bool* found);
-void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor);
-bool abb_in_order_aux(nodo_t *nodo, bool visitar(const char *, void *, void *), void *extra);
+
+//Funcion recursiva para borrar un nodo
 nodo_t* abb_borrar_aux(abb_t* abb, nodo_t *nodo, const char *clave, abb_comparar_clave_t comparador, abb_destruir_dato_t destructor, void** dato);
+
+//Funcion recursiva para destruir el abb
+void abb_destruir_aux(nodo_t *nodo, abb_destruir_dato_t destructor);
+
+//Funcion recursiva para recorrer el abb
+bool abb_in_order_aux(nodo_t *nodo, bool visitar(const char *, void *, void *), void *extra);
+
+
+
 /* ******************************************************************
  *                    PRIMITIVAS DEL ABB
  * *****************************************************************/
