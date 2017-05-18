@@ -40,14 +40,20 @@ void prueba_insertar(){
     int siete = 7;
 
     print_test("Prueba insertar clave2", abb_guardar(abb, "2", &dos));
+    print_test("Prueba la cantidad de elementos es 1", abb_cantidad(abb) == 1);
     print_test("Prueba insertar clave1", abb_guardar(abb, "1", &uno));
+    print_test("Prueba la cantidad de elementos es 2", abb_cantidad(abb) == 2);
     print_test("Prueba insertar clave3", abb_guardar(abb, "3", &tres));
+    print_test("Prueba la cantidad de elementos es 3", abb_cantidad(abb) == 3);
     print_test("Prueba obtener clave1 es NULL", abb_obtener(abb, "1") == &uno);
     print_test("Prueba obtener clave1 es NULL", abb_obtener(abb, "1") == &uno);
 
     print_test("Prueba borrar clave2, es valor2", abb_borrar(abb, "2") == &dos);
+    print_test("Prueba la cantidad de elementos es 2", abb_cantidad(abb) == 2);
     print_test("Prueba borrar clave1, es valor1", abb_borrar(abb, "1") == &uno);
+    print_test("Prueba la cantidad de elementos es 1", abb_cantidad(abb) == 1);
     print_test("Prueba borrar clave3, es valor3", abb_borrar(abb, "3") == &tres);
+    print_test("Prueba la cantidad de elementos es 0", abb_cantidad(abb) == 0);
     print_test("Prueba obtener clave1 es NULL", !abb_obtener(abb, "1"));
     print_test("Prueba obtener clave1 es NULL", !abb_obtener(abb, "1"));
 
